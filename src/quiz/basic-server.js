@@ -1,6 +1,5 @@
 #! /opt/homebrew/bin/node
 const http = require('http');
-const url = require('url');
 
 const hostname = 'localhost';
 const port = 8000;
@@ -14,7 +13,6 @@ const incidents = [
         place: "Stonehaven",
         direction: "north",
         description: "Broken-down T on north and park station."
-
     },
     {
         id: "MABOS002",
@@ -24,33 +22,27 @@ const incidents = [
         place: "Stonehaven",
         direction: "north",
         description: "Car in West Village broken down."
-
     }
-]
+];
 
 const server = http.createServer((req, res) => {
-    // Parse the request URL to extract parameters
-    const parsedUrl = url.parse(req.url, true);
-    const { pathname } = parsedUrl;
+    const requestURL = new URL(req.url, `http://${req.headers.host}`);
+    const pathname = requestURL.pathname;
 
-    // Check if the request is for the specified endpoint
+    // Simplified endpoint check to directly match the incidents list
     if (pathname.startsWith('/incidents/')) {
-        // Extract parameters from the URL
-        const [, , road, location, direction, id] = pathname.split('/');
-        // Check if all parameters are provided
-        if (road && location && direction && id) {
-            // Send response with the extracted parameters
+        const incidentId = pathname.split('/')[2]; // Assuming the URL format is /incidents/{id}
+
+        const filteredIncidents = incidents.filter(incident => incident.id === incidentId);
+
+        if (filteredIncidents.length) {
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(incidents.filter((incident) => {
-                return incident.id === `MABOS00${id}`
-            })));
-        }
-        else {
+            res.end(JSON.stringify(filteredIncidents));
+        } else {
             res.writeHead(404, { 'Content-Type': 'text/plain' });
-            res.end('Endpoint not found');
+            res.end('Incident not found');
         }
     } else {
-        // If the request is for an unsupported endpoint, send a not found response
         res.writeHead(404, { 'Content-Type': 'text/plain' });
         res.end('Endpoint not found');
     }
@@ -58,4 +50,4 @@ const server = http.createServer((req, res) => {
 
 server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
-})
+});

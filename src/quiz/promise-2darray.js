@@ -21,15 +21,19 @@ function sum2DArray(arr) {
     });
 }
 
-// Example usage:
 const array2D = [
     [1, 2, 3],
     [4, 5, 6],
     [7, 8, 9]
 ];
 
-const sumPromise1 = sum2DArray(array2D);
-console.log(sumPromise1);
 
-const sumPromise2 = sum2DArray('array2D');
-console.log(sumPromise2);
+sum2DArray(array2D)
+    .then(sum => console.log(`Sum: ${sum}`)) 
+    .catch(error => console.error(`Error: ${error}`));
+
+
+sum2DArray('array2D')
+    .then(sum => console.log(`Sum: ${sum}`))
+    .catch(error => console.error(`Error: ${error}`));
+
