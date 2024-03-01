@@ -33,7 +33,7 @@ sum2DArray(array2D)
     .catch(error => console.error(`Error: ${error}`));
 
 
-sum2DArray('array2D')
+sum2DArray(array2D)
     .then(sum => console.log(`Sum: ${sum}`))
     .catch(error => console.error(`Error: ${error}`));
 
